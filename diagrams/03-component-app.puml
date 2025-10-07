@@ -1,0 +1,43 @@
+@startuml
+' C4 Level 3 — Components (inside Flutter app)
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+LAYOUT_WITH_LEGEND()
+
+title Flutter App — Components (L3, frontend only)
+
+Container_Boundary(app, "Flutter Mobile App") {
+  Component(appRoot, "App Root", "main.dart", "Init Firebase, Provider<ApplicationState>, MaterialApp.")
+  Component(uiLogin, "LoginScreen", "login_screen.dart", "UI logowania, wywołuje Google Sign-In.")
+  Component(uiHome, "HomeScreen", "home_screen.dart", "Lista powiadomień + wyszukiwarka, wyświetlanie treści.")
+  Component(state, "ApplicationState", "application_state.dart", "ChangeNotifier: dark mode on/off (SharedPreferences).")
+  Component(authsvc, "AuthService", "auth_service.dart", "google_sign_in + (opcjonalnie) wymiana tokena z backendem.")
+  Component(notifApi, "NotificationApi", "notification_service.dart", "GET /notifications (http + .env API_URL).")
+  Component(modelNotif, "NotificationItem", "notification_item.dart", "Model danych powiadomień.")
+  Component(utilsHome, "HomeScreenUtils", "home_screen_utils.dart", "Filtrowanie listy, formatowanie czasu.")
+  Component(utilsPost, "PostUtils", "post_utils.dart", "Render obrazków i linków (RichText).")
+  Component(notifHandler, "FirebaseMessagingHandler", "firebase_messaging_handler.dart", "Obsługa onMessage / background → lokalne notyfikacje.")
+  Component(localStore, "Local Storage", "SharedPreferences", "Przechowuje ustawienia (np. dark mode).")
+}
+
+' Relacje wewnątrz aplikacji
+Rel(appRoot, state, "Udostępnia przez Provider")
+Rel(uiLogin, authsvc, "Sign-in (Google)")
+Rel(uiLogin, uiHome, "Nawigacja po sukcesie logowania")
+Rel(uiHome, notifApi, "Pobiera listę powiadomień", "HTTP")
+Rel(uiHome, state, "Czyta/stawia tryb ciemny")
+Rel(uiHome, utilsHome, "Używa (search/sort/time)")
+Rel(uiHome, utilsPost, "Używa (render treści/linków)")
+Rel(notifApi, modelNotif, "Mapuje JSON → model")
+Rel(state, localStore, "Odczyt/Zapis", "SharedPreferences")
+
+' Relacje z usługami zewnętrznymi
+Container_Ext(googleAuth, "Google Sign-In", "", "Uwierzytelnianie Google")
+Container_Ext(fcm, "Firebase Cloud Messaging (FCM)", "", "Push")
+Container_Ext(locals, "flutter_local_notifications", "", "Lokale notyfikacje w systemie")
+
+Rel(authsvc, googleAuth, "OAuth/OIDC (signIn)")
+Rel(fcm, notifHandler, "FCM callbacki", "onMessage/onBackgroundMessage")
+Rel(notifHandler, locals, "Wyświetla powiadomienia lokalne")
+
+SHOW_LEGEND()
+@enduml

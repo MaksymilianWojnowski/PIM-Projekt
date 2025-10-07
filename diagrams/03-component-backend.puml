@@ -1,0 +1,39 @@
+@startuml
+' C4 Level 3 — Components (inside Backend API)
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+LAYOUT_WITH_LEGEND()
+
+title Backend API (FastAPI) — Components (L3)
+
+Container_Boundary(backend, "Backend REST API — FastAPI") {
+  Component(app, "FastAPI App", "main.py", "Konfiguracja aplikacji, CORS, rejestracja routerów, /auth/google")
+  Component(routerNotif, "Notifications Router", "routes/notifications.py", "GET /notifications, POST /notifications, mapping modeli")
+  Component(modelNotif, "Notification Models", "models/notification.py", "Pydantic: Notification, NotificationCreate")
+  Component(modelUser, "UserEmail Model", "models/user.py", "Pydantic: UserEmail")
+  Component(gauth, "GoogleAuthService", "auth/google_auth.py", "verify_google_token(), is_user_in_db()")
+  Component(db, "Database Access", "db/database.py", "get_db_connection() — MySQL")
+  Component(sched, "Scheduler Jobs", "scheduler.py", "APScheduler: update_and_send_notifications()")
+  Component(fcmSender, "FcmSender", "scheduler.py", "Budowa payloadu i POST → FCM HTTP v1")
+}
+
+' Zewnętrzne integracje
+ContainerDb(mysql, "MySQL", "DB", "Tabela/notyfikacje/użytkownicy")
+Container_Ext(google, "Google Token Verify", "Google OAuth", "id_token.verify_oauth2_token(...)")
+Container_Ext(fcm, "FCM HTTP v1", "Google API", "messages:send")
+
+' Relacje wewnętrzne
+Rel(app, routerNotif, "Dołącza router")
+Rel(app, gauth, "Używa w /auth/google")
+Rel(routerNotif, db, "SQL CRUD")
+Rel(routerNotif, modelNotif, "Pydantic serialize/validate")
+Rel(app, db, "Połączenie z DB (opcjonalnie przez routery)")
+Rel(sched, db, "Pobiera zaległe powiadomienia")
+Rel(sched, fcmSender, "Wyślij powiadomienie")
+
+' Relacje zewnętrzne
+Rel(gauth, google, "Weryfikacja idToken")
+Rel(db, mysql, "Połączenie")
+Rel(fcmSender, fcm, "HTTP POST messages:send")
+
+SHOW_LEGEND()
+@enduml

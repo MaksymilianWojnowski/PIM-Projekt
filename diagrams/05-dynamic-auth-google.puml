@@ -1,0 +1,25 @@
+@startuml
+' C4 Dynamic — Google Sign-In verification flow
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Dynamic.puml
+LAYOUT_WITH_LEGEND()
+
+title Auth flow — Google Sign-In → Backend verify
+
+Person(user, "Użytkownik")
+Container(app, "Flutter App", "LoginScreen/AuthService")
+Container_Ext(google, "Google Sign-In", "OAuth 2.0 (idToken)")
+Component(backend, "FastAPI /auth/google", "main.py + google_auth.py")
+Component(gauth, "verify_google_token()", "google_auth.py")
+ContainerDb(db, "MySQL", "Users")
+
+' Przepływ
+Rel_D(user, app, "1) Tap 'Zaloguj przez Google'")
+Rel_D(app, google, "2) OAuth flow → idToken")
+Rel_D(app, backend, "3) POST /auth/google (idToken w body)")
+Rel_D(backend, gauth, "4) verify_google_token(idToken)")
+Rel_D(gauth, google, "5) verify_oauth2_token(...)")
+Rel_D(backend, db, "6) is_user_in_db(email)?")
+Rel_D(backend, app, "7) 200 OK / 401, payload z e-mailem/rolą itp.")
+
+SHOW_LEGEND()
+@enduml

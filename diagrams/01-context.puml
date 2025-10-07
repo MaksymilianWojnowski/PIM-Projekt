@@ -1,0 +1,23 @@
+@startuml
+' C4 Level 1 — System Context
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+LAYOUT_WITH_LEGEND()
+
+title Notifications System — Context (L1)
+
+Person(user, "Użytkownik", "Korzysta z aplikacji mobilnej, odbiera powiadomienia.")
+System_Boundary(sys, "System powiadomień") {
+  System(app, "Aplikacja mobilna (Flutter)", "Dart/Flutter", "UI klienta, logika prezentacji, odbiór push.")
+  System_Ext(api, "Backend API (Python)", "HTTP/JSON", "Zarządza użytkownikami/zdarzeniami, wysyła powiadomienia.")
+  System_Ext(auth, "Google Sign-In / OAuth 2.0", "", "Uwierzytelnianie dostarczane przez Google.")
+  System_Ext(fcm, "Firebase Cloud Messaging (FCM)", "", "Dostarcza powiadomienia push do urządzenia.")
+}
+
+Rel(user, app, "Używa", "Mobile UI")
+Rel(app, auth, "Logowanie / tokeny", "OAuth 2.0")
+Rel(app, api, "Żądania/odpowiedzi", "HTTPS/JSON")
+Rel(api, fcm, "Wysyła wiadomości push")
+Rel(fcm, app, "Dostarcza powiadomienia", "Push")
+
+SHOW_LEGEND()
+@enduml

@@ -1,0 +1,42 @@
+name: frontend
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_sign_in: ^6.1.4
+  http: ^0.13.0
+  flutter_dotenv: ^5.0.2
+  cupertino_icons: ^1.0.8
+  firebase_core: ^2.27.0
+  firebase_messaging: ^14.7.7
+  flutter_local_notifications: ^17.2.1
+  intl: ^0.18.1
+  provider: ^6.1.4
+  shared_preferences: ^2.5.3
+  url_launcher: ^6.3.1
+  flutter_launcher_icons: ^0.14.3
+    
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logoinsert.png" 
+  remove_alpha_ios: true
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - .env  
+    - assets/logoinsert.png

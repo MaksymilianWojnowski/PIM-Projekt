@@ -1,0 +1,30 @@
+@startuml
+' C4 Dynamic — Push Notification Flow
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Dynamic.puml
+LAYOUT_WITH_LEGEND()
+
+title Push notification — end‑to‑end flow (Dynamic)
+
+Person(user, "Użytkownik", "Widzi i dotyka powiadomienie.")
+Container_Ext(scheduler, "Scheduler/Worker", "Cron/Background job", "Wyzwala wysyłkę wg harmonogramu/zdarzenia.")
+Container_Ext(api, "Backend REST API", "Python", "Przyjmuje żądanie wysyłki, buduje payload.")
+Container_Ext(fcm, "Firebase Cloud Messaging (FCM)", "", "Dostarcza powiadomienia na urządzenia.")
+Container(mobile, "Flutter Mobile App", "Dart/Flutter", "Aplikacja kliencka, obsługa FCM i lokalnych notyfikacji.")
+
+Container_Boundary(app, "Flutter App — wnętrze") {
+  Component(notifsvc, "NotificationService", "firebase_messaging + flutter_local_notifications", "Rejestruje handlery FCM i wyświetla lokalne powiadomienia.")
+}
+
+' --- Główna ścieżka: zaplanowane/zdarzeniowe powiadomienie ---
+Rel_D(scheduler, api, "1) Wyzwala wysyłkę", "HTTP/JSON")
+Rel_D(api, fcm, "2) Wysyła payload (token/topic)", "HTTP/JSON")
+Rel_D(fcm, mobile, "3) Dostarcza push", "FCM")
+Rel_D(mobile, notifsvc, "4) onMessage / onBackgroundMessage", "Callback")
+Rel_D(notifsvc, user, "5) Wyświetla lokalne powiadomienie", "flutter_local_notifications")
+
+' --- Opcjonalnie: interakcja użytkownika po tapnięciu ---
+Rel_D(user, mobile, "6) Tap na powiadomienie → deep link / otwarcie ekranu")
+Rel_D(mobile, api, "7) (Opcjonalnie) dociąga szczegóły", "GET /details")
+
+SHOW_LEGEND()
+@enduml
