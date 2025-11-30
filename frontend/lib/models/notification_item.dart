@@ -1,4 +1,5 @@
 class NotificationItem {
+  final int id; // <-- NOWE
   final String title;
   final String content;
   final String excerpt;
@@ -6,6 +7,7 @@ class NotificationItem {
   final String scheduledTime;
 
   NotificationItem({
+    required this.id,
     required this.title,
     required this.content,
     required this.excerpt,
@@ -15,6 +17,10 @@ class NotificationItem {
 
   factory NotificationItem.fromJson(Map<String, dynamic> json) {
     return NotificationItem(
+      id:
+          json['id'] is int
+              ? json['id'] as int
+              : int.parse(json['id'].toString()),
       title: json['title'] ?? "Brak tytułu",
       content: json['content'] ?? "Brak treści",
       excerpt: json['excerpt'] ?? "Brak skrótu",

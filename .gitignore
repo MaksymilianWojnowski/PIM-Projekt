@@ -1,0 +1,70 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+.idea/
+.vscode/
+*.iml
+
+# Python backend artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.cache/
+.coverage
+.coverage.*
+.pytype/
+venv/
+.venv/
+env/
+ENV/
+
+# Environment and secrets
+.env
+.env.*
+backend/.env
+backend/firebase-key.json
+frontend/.env
+
+# Flutter/Dart
+frontend/.metadata
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+frontend/.packages
+frontend/.pub-cache/
+frontend/.pub/
+frontend/build/
+frontend/coverage/
+
+# Android specific
+frontend/android/.gradle/
+frontend/android/app/build/
+frontend/android/local.properties
+frontend/android/key.properties
+frontend/android/app/google-services.json
+
+# iOS/macOS/Linux/Windows Flutter generated output
+frontend/ios/Pods/
+frontend/ios/.symlinks/
+frontend/ios/Flutter/ephemeral/
+frontend/ios/Flutter/App.framework
+frontend/ios/Flutter/Flutter.framework
+frontend/ios/ServiceDefinitions.json
+frontend/ios/Runner/GoogleService-Info.plist
+frontend/macos/Flutter/ephemeral/
+frontend/linux/flutter/ephemeral/
+frontend/windows/flutter/ephemeral/
+
+# Generated plugin registrants and build exports
+**/GeneratedPluginRegistrant.*
+**/flutter_export_environment.sh

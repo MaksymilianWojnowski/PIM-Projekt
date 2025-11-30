@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes import notifications
 from routes.notifications import get_notifications
 from scheduler import start_scheduler
+from routes import notifications_extras 
 
 from auth.google_auth import verify_google_token, is_user_in_db
 
@@ -27,6 +28,8 @@ start_scheduler()
 
 # REST dla powiadomień
 app.include_router(notifications.router)
+
+app.include_router(notifications_extras.router, prefix="/notifications", tags=["extras"])
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Pomocnicze: tylko do logów – podgląd payloadu JWT bez weryfikacji

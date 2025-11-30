@@ -8,7 +8,11 @@ import 'package:frontend/services/notification_service.dart';
 import 'package:frontend/services/application_state.dart';
 import '../theme/colors.dart';
 import 'package:frontend/utils/post_utils.dart';
-import 'package:frontend/utils/home_screen_utils.dart'; 
+import 'package:frontend/utils/home_screen_utils.dart';
+
+// NOWE:
+import 'package:frontend/widgets/poll_section.dart';
+import 'package:frontend/widgets/comments_section.dart';
 
 class HomeScreen extends StatefulWidget {
   final String email;
@@ -43,34 +47,36 @@ class _HomeScreenState extends State<HomeScreen> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDarkMode ? Theme.of(context).scaffoldBackgroundColor : Color(0xFF0071B8),
+      backgroundColor:
+          isDarkMode
+              ? Theme.of(context).scaffoldBackgroundColor
+              : const Color(0xFF0071B8),
       appBar: AppBar(
-        backgroundColor: Color(0xFF0071B8),
-        iconTheme: IconThemeData(color: Colors.white),
-        titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
+        backgroundColor: const Color(0xFF0071B8),
+        iconTheme: const IconThemeData(color: Colors.white),
+        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
         elevation: 0,
-        title: _isSearching
-            ? TextField(
-                controller: _searchController,
-                autofocus: true,
-                onChanged: (query) {
-                  HomeScreenUtils.filterSearchResults(
-                    query,
-                    _allNotifications,
-                    (filtered) => setState(() => _filteredNotifications = filtered),
-                  );
-                },
-                decoration: InputDecoration(
-                  hintText: 'Szukaj...',
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(color: Colors.white70),
-                ),
-                style: TextStyle(color: Colors.white),
-              )
-            : Image.asset(
-                'assets/logoinsert.png',
-                height: 116,
-              ),
+        title:
+            _isSearching
+                ? TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  onChanged: (query) {
+                    HomeScreenUtils.filterSearchResults(
+                      query,
+                      _allNotifications,
+                      (filtered) =>
+                          setState(() => _filteredNotifications = filtered),
+                    );
+                  },
+                  decoration: const InputDecoration(
+                    hintText: 'Szukaj...',
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(color: Colors.white70),
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                )
+                : Image.asset('assets/logoinsert.png', height: 116),
         actions: [
           IconButton(
             icon: Icon(_isSearching ? Icons.close : Icons.search),
@@ -86,15 +92,18 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             iconSize: 36,
             onPressed: () => HomeScreenUtils.signOut(context),
           ),
           IconButton(
-            icon: Icon(Icons.brightness_6),
+            icon: const Icon(Icons.brightness_6),
             iconSize: 36,
             onPressed: () {
-              Provider.of<ApplicationState>(context, listen: false).toggleDarkMode();
+              Provider.of<ApplicationState>(
+                context,
+                listen: false,
+              ).toggleDarkMode();
             },
           ),
         ],
@@ -103,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
         future: futureNotifications,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text("Błąd: ${snapshot.error}"));
           }
@@ -123,9 +132,10 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (context, index) {
                 final post = _filteredNotifications[index];
                 return GestureDetector(
-                  onLongPress: () => HomeScreenUtils.showPostDialog(context, post),
+                  onLongPress:
+                      () => HomeScreenUtils.showPostDialog(context, post),
                   child: Card(
-                    margin: EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
                     color: Theme.of(context).cardColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -141,14 +151,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Icon(Icons.broken_image),
+                          errorBuilder:
+                              (context, error, stackTrace) =>
+                                  const Icon(Icons.broken_image),
                         ),
                       ),
                       title: Text(
                         post.title,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: isDarkMode ? Theme.of(context).textTheme.bodyLarge!.color : AppColors.primaryDark,
+                          color:
+                              isDarkMode
+                                  ? Theme.of(context).textTheme.bodyLarge!.color
+                                  : AppColors.primaryDark,
                         ),
                       ),
                       subtitle: Column(
@@ -157,17 +172,27 @@ class _HomeScreenState extends State<HomeScreen> {
                           Text(
                             post.excerpt,
                             style: TextStyle(
-                              color: isDarkMode ? Theme.of(context).textTheme.bodyMedium!.color : Colors.black,
+                              color:
+                                  isDarkMode
+                                      ? Theme.of(
+                                        context,
+                                      ).textTheme.bodyMedium!.color
+                                      : Colors.black,
                             ),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
-                            HomeScreenUtils.timeAgo(DateTime.parse(post.scheduledTime)),
+                            HomeScreenUtils.timeAgo(
+                              DateTime.parse(post.scheduledTime),
+                            ),
                             style: TextStyle(
                               fontSize: 12,
-                              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                              color:
+                                  isDarkMode
+                                      ? Colors.grey[400]
+                                      : Colors.grey[600],
                             ),
                           ),
                         ],
@@ -175,10 +200,31 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: 
-                            buildFormattedTextWithLinks(context, post.content)
+                          child: buildFormattedTextWithLinks(
+                            context,
+                            post.content,
+                          ),
                         ),
-                        
+
+                        // --- ANKIETA (pokaże się tylko gdy istnieje aktywna) ---
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: PollSection(
+                            notificationId: post.id,
+                            userEmail: widget.email,
+                          ),
+                        ),
+
+                        // --- KOMENTARZE ---
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                          child: CommentsSection(
+                            notificationId: post.id,
+                            userEmail: widget.email,
+                            userName:
+                                widget.email.split('@').first, // prosty podpis
+                          ),
+                        ),
                       ],
                     ),
                   ),
